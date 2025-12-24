@@ -216,11 +216,18 @@
       el.className = 'blessing';
       el.textContent = blessings[Math.floor(Math.random() * blessings.length)];
 
+      // 设置祝福框的样式
       const colors = ['#FFD700', '#FFB6C1', '#FFE4B5', '#E0FFFF', '#FAFAD2', '#FFF0F5', '#F0FFF0', '#D8BFD8'];
       el.style.color = colors[Math.floor(Math.random() * colors.length)];
+      el.style.backgroundColor = "rgba(255, 255, 255, 0.7)"; // 背景颜色
+      el.style.border = "2px solid #fff"; // 白色边框
+      el.style.borderRadius = "12px"; // 圆角边框
+      el.style.padding = "8px 16px"; // 内边距，增加框的尺寸
+      el.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.2)"; // 轻微阴影
 
-      const x = Math.random() * 100;
-      const y = Math. random() * 100;
+      // 使祝福不重叠，避免重叠的区域
+      const x = Math.random() * 70 + 10; // 避免靠近边缘
+      const y = Math.random() * 70 + 10; // 避免靠近边缘
       el.style.left = `${x}vw`;
       el.style.top = `${y}vh`;
 
