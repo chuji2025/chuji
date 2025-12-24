@@ -39,7 +39,7 @@
       position: absolute;
       font-size: 16px;
       font-weight: bold;
-      opacity: 0.85;
+      opacity: 0;
       z-index: 2;
       pointer-events: none;
       white-space: nowrap;
@@ -49,6 +49,12 @@
       border-radius: 12px;
       padding: 8px 16px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 2s forwards;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     /* 引导页 */
@@ -238,9 +244,9 @@
       el.className = 'blessing';
       el.textContent = blessings[Math.floor(Math.random() * blessings.length)];
 
-      // 随机计算祝福的左侧位置
-      const x = Math.random() * 70 + 15;
-      const y = Math.random() * 10 + 70; // 祝福在底部周围
+      // 计算祝福的随机位置，避免重叠
+      const x = Math.random() * 50 + 25; // 保证祝福出现在框的区域内
+      const y = Math.random() * 50 + 10; // 保证祝福出现在框的区域内
 
       el.style.left = `${x}vw`;
       el.style.top = `${y}vh`;
