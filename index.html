@@ -36,7 +36,7 @@
 
     /* 祝福语气泡 */
     .blessing {
-      position: fixed;
+      position: absolute;
       font-size: 16px;
       font-weight: bold;
       opacity: 0.85;
@@ -44,15 +44,11 @@
       pointer-events: none;
       white-space: nowrap;
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-      animation: float 25s infinite ease-in-out;
-    }
-
-    @keyframes float {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      25% { transform: translate(-30px, -20px) rotate(-2deg); }
-      50% { transform: translate(20px, -40px) rotate(3deg); }
-      75% { transform: translate(10px, -20px) rotate(-1deg); }
-      100% { transform: translate(0, 0) rotate(0deg); }
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 2px solid #fff;
+      border-radius: 12px;
+      padding: 8px 16px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
 
     /* 引导页 */
@@ -115,6 +111,7 @@
       max-width: 90%;
       width: 320px;
       display: none;
+      overflow: visible;
     }
 
     #christmas-popup h2 {
@@ -133,6 +130,31 @@
     .emoji {
       font-size: 32px;
       margin: 10px 0;
+    }
+
+    /* 响应式调整：手机屏幕时调整框的大小 */
+    @media (max-width: 600px) {
+      #christmas-popup {
+        padding: 20px 40px;
+        width: 90%;
+        max-width: 320px;
+      }
+
+      .btn {
+        font-size: 16px;
+      }
+
+      .btn-yes {
+        padding: 10px 20px;
+      }
+
+      .btn-no {
+        padding: 10px 20px;
+      }
+
+      #intro-screen h2 {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
@@ -216,36 +238,12 @@
       el.className = 'blessing';
       el.textContent = blessings[Math.floor(Math.random() * blessings.length)];
 
-      // 设置祝福框的样式
-      const colors = ['#FFD700', '#FFB6C1', '#FFE4B5', '#E0FFFF', '#FAFAD2', '#FFF0F5', '#F0FFF0', '#D8BFD8'];
-      el.style.color = colors[Math.floor(Math.random() * colors.length)];
-      el.style.backgroundColor = "rgba(255, 255, 255, 0.7)"; // 背景颜色
-      el.style.border = "2px solid #fff"; // 白色边框
-      el.style.borderRadius = "12px"; // 圆角边框
-      el.style.padding = "8px 16px"; // 内边距，增加框的尺寸
-      el.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.2)"; // 轻微阴影
+      // 随机计算祝福的左侧位置
+      const x = Math.random() * 70 + 15;
+      const y = Math.random() * 10 + 70; // 祝福在底部周围
 
-      // 计算弹窗的位置，避免祝福和弹窗重叠
-      const popupRect = document.getElementById('christmas-popup').getBoundingClientRect();
-      const x = Math.random() * 70 + 10; // 避免靠近边缘
-      const y = Math.random() * 70 + 10; // 避免靠近边缘
-
-      // 确保祝福不会出现在弹窗区域内
-      if (x > (popupRect.left / window.innerWidth) * 100 && x < ((popupRect.right / window.innerWidth) * 100)) {
-        el.style.left = `${x + 20}vw`;
-      }
-
-      if (y > (popupRect.top / window.innerHeight) * 100 && y < ((popupRect.bottom / window.innerHeight) * 100)) {
-        el.style.top = `${y + 20}vh`;
-      } else {
-        el.style.left = `${x}vw`;
-        el.style.top = `${y}vh`;
-      }
-
-      const duration = 20 + Math.random() * 15;
-      const delay = Math.random() * 10;
-      el.style.animationDuration = `${duration}s`;
-      el.style.animationDelay = `-${delay}s`;
+      el.style.left = `${x}vw`;
+      el.style.top = `${y}vh`;
 
       return el;
     }
