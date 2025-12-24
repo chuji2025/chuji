@@ -34,7 +34,7 @@
       z-index: 1;
     }
 
-    /* 引导页容器 */
+    /* 引导页 */
     #intro-screen {
       text-align: center;
       z-index: 10;
@@ -65,7 +65,7 @@
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
@@ -79,7 +79,7 @@
       color: white;
     }
 
-    /* 祝福页弹窗 */
+    /* 祝福弹窗（初始隐藏） */
     #christmas-popup {
       position: fixed;
       top: 50%;
@@ -113,10 +113,6 @@
       font-size: 32px;
       margin: 10px 0;
     }
-
-    .hidden {
-      display: none !important;
-    }
   </style>
 </head>
 <body>
@@ -137,7 +133,7 @@
     <p>Merry Christmas!<br>愿平安与喜乐常伴你左右～</p>
   </div>
 
-  <!-- 背景音乐（初始不播放） -->
+  <!-- 音频元素（不自动播放） -->
   <audio id="christmas-music">
     <source src="jingle-bells-short-454803.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
@@ -145,7 +141,7 @@
 
   <!-- 飘雪脚本 -->
   <script>
-    // ========== 飘雪效果 ==========
+    // ========== 飘雪 ==========
     (function createSnow() {
       const snowflakes = 60;
       const container = document.body;
@@ -182,9 +178,7 @@
       }
     })();
 
-    // ========== 按钮交互逻辑 ==========
-    let denyCount = 0;
-    const maxDeny = 5;
+    // ========== 交互逻辑 ==========
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
     const introScreen = document.getElementById('intro-screen');
@@ -193,37 +187,20 @@
 
     // 点击“是”：播放音乐 + 显示祝福页
     btnYes.addEventListener('click', () => {
-      // 播放音乐
+      // 设置音量并播放
       music.volume = 0.6;
-      music.play().catch(e => console.log("音乐播放失败:", e));
+      music.play().catch(err => {
+        console.warn("背景音乐未能播放（可能被浏览器阻止）:", err);
+      });
 
       // 切换界面
-      introScreen.classList.add('hidden');
+      introScreen.style.display = 'none';
       popup.style.display = 'block';
     });
 
-    // 点击“否”：动态调整按钮
+    // 点击“否”：无操作（可留空）
     btnNo.addEventListener('click', () => {
-      denyCount++;
-      
-      const yesScale = 1 + denyCount * 0.2;
-      const noScale = Math.max(0, 1 - denyCount * 0.25);
-
-      btnYes.style.transform = `scale(${yesScale})`;
-      btnNo.style.transform = `scale(${noScale})`;
-      btnNo.style.opacity = noScale;
-
-      if (denyCount >= maxDeny) {
-        btnNo.style.pointerEvents = 'none';
-        btnNo.textContent = '';
-        // 自动跳转（也播放音乐）
-        setTimeout(() => {
-          music.volume = 0.6;
-          music.play().catch(() => {});
-          introScreen.classList.add('hidden');
-          popup.style.display = 'block';
-        }, 800);
-      }
+      // 什么都不做
     });
   </script>
 
