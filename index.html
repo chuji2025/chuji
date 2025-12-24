@@ -79,7 +79,7 @@
       color: white;
     }
 
-    /* 祝福弹窗（初始隐藏） */
+    /* 祝福弹窗 */
     #christmas-popup {
       position: fixed;
       top: 50%;
@@ -133,13 +133,13 @@
     <p>Merry Christmas!<br>愿平安与喜乐常伴你左右～</p>
   </div>
 
-  <!-- 音频元素（不自动播放） -->
+  <!-- 音频（仅通过用户操作触发） -->
   <audio id="christmas-music">
     <source src="jingle-bells-short-454803.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
 
-  <!-- 飘雪脚本 -->
+  <!-- 飘雪 + 交互逻辑 -->
   <script>
     // ========== 飘雪 ==========
     (function createSnow() {
@@ -178,7 +178,8 @@
       }
     })();
 
-    // ========== 交互逻辑 ==========
+    // ========== 按钮交互 ==========
+    let denyCount = 0;
     const btnYes = document.getElementById('btn-yes');
     const btnNo = document.getElementById('btn-no');
     const introScreen = document.getElementById('intro-screen');
@@ -187,20 +188,24 @@
 
     // 点击“是”：播放音乐 + 显示祝福页
     btnYes.addEventListener('click', () => {
-      // 设置音量并播放
       music.volume = 0.6;
       music.play().catch(err => {
-        console.warn("背景音乐未能播放（可能被浏览器阻止）:", err);
+        console.warn("音乐播放被阻止:", err);
       });
-
-      // 切换界面
       introScreen.style.display = 'none';
       popup.style.display = 'block';
     });
 
-    // 点击“否”：无操作（可留空）
+    // 点击“否”：仅调整按钮大小，不跳转、不消失
     btnNo.addEventListener('click', () => {
-      // 什么都不做
+      denyCount++;
+      const yesScale = 1 + denyCount * 0.2;   // 每次 +20%
+      const noScale = Math.max(0.1, 1 - denyCount * 0.15); // 每次 -15%，最小保留 10%
+
+      btnYes.style.transform = `scale(${yesScale})`;
+      btnNo.style.transform = `scale(${noScale})`;
+      btnNo.style.opacity = noScale;
+      // 注意：不再自动跳转，用户可无限点击“否”
     });
   </script>
 
