@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>圣诞祝福</title>
+  <title>圣诞惊喜</title>
   <style>
     * {
       margin: 0;
@@ -15,11 +15,15 @@
       background: linear-gradient(135deg, #c1272d, #8b0000);
       min-height: 100vh;
       font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
       overflow: hidden;
       position: relative;
-      color: white;
     }
 
+    /* 飘雪样式 */
     .snow {
       position: absolute;
       top: -20px;
@@ -30,6 +34,52 @@
       z-index: 1;
     }
 
+    /* 引导页容器 */
+    #intro-screen {
+      text-align: center;
+      z-index: 10;
+      padding: 20px;
+      max-width: 90%;
+      width: 320px;
+    }
+
+    #intro-screen h2 {
+      font-size: 22px;
+      line-height: 1.5;
+      margin-bottom: 30px;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .btn-yes {
+      background: #ffd700;
+      color: #c1272d;
+    }
+
+    .btn-no {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    /* 祝福页弹窗 */
     #christmas-popup {
       position: fixed;
       top: 50%;
@@ -43,6 +93,7 @@
       z-index: 9999;
       max-width: 90%;
       width: 320px;
+      display: none; /* 默认隐藏 */
     }
 
     #christmas-popup h2 {
@@ -62,25 +113,39 @@
       font-size: 32px;
       margin: 10px 0;
     }
+
+    /* 隐藏元素 */
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
 
-  <!-- 自动弹窗 -->
+  <!-- 引导页 -->
+  <div id="intro-screen">
+    <h2>温馨提示：<br>请不要轻易点开陌生链接哦～<br>罚你接受圣诞祝福！</h2>
+    <div class="buttons">
+      <button id="btn-yes" class="btn btn-yes">是</button>
+      <button id="btn-no" class="btn btn-no">否</button>
+    </div>
+  </div>
+
+  <!-- 圣诞祝福弹窗（主界面） -->
   <div id="christmas-popup">
     <div class="emoji">🎄🎅</div>
     <h2>圣诞快乐！</h2>
     <p>Merry Christmas!<br>愿平安与喜乐常伴你左右～</p>
   </div>
 
-  <!-- 圣诞背景音乐 -->
-  <audio id="christmas-music" autoplay loop>
+  <!-- 背景音乐（静音自动播放，交互后取消静音） -->
+  <audio id="christmas-music" muted autoplay loop>
     <source src="jingle-bells-short-454803.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
   </audio>
 
   <!-- 飘雪脚本 -->
   <script>
+    // ========== 飘雪效果 ==========
     (function createSnow() {
       const snowflakes = 60;
       const container = document.body;
@@ -89,7 +154,7 @@
         const snow = document.createElement('div');
         snow.innerHTML = '❄';
         snow.className = 'snow';
-
+        
         const size = 10 + Math.random() * 20;
         const opacity = 0.5 + Math.random() * 0.5;
         const duration = 5 + Math.random() * 10;
@@ -117,20 +182,50 @@
       }
     })();
 
-    // 音乐播放逻辑
-    document.addEventListener('DOMContentLoaded', () => {
-      const music = document.getElementById('christmas-music');
+    // ========== 按钮交互逻辑 ==========
+    let denyCount = 0;
+    const maxDeny = 5;
+    const btnYes = document.getElementById('btn-yes');
+    const btnNo = document.getElementById('btn-no');
+    const introScreen = document.getElementById('intro-screen');
+    const popup = document.getElementById('christmas-popup');
+    const music = document.getElementById('christmas-music');
 
-      const playMusic = () => {
-        music.play().catch(e => console.log("Autoplay blocked:", e));
-        document.body.removeEventListener('click', playMusic);
-      };
+    // 尝试静音播放（浏览器允许）
+    music.play().catch(() => {});
 
-      document.body.addEventListener('click', playMusic, { once: true });
+    // 点击“是” → 显示祝福页 + 播放音乐
+    btnYes.addEventListener('click', () => {
+      introScreen.classList.add('hidden');
+      popup.style.display = 'block';
+      music.muted = false;
+      music.volume = 0.6;
+    });
 
-      setTimeout(() => {
-        music.play().catch(() => {});
-      }, 1000);
+    // 点击“否” → 动态调整按钮大小
+    btnNo.addEventListener('click', () => {
+      denyCount++;
+      
+      // 计算缩放比例
+      const yesScale = 1 + denyCount * 0.2; // 每次 +20%
+      const noScale = Math.max(0, 1 - denyCount * 0.25); // 每次 -25%，最小为0
+
+      btnYes.style.transform = `scale(${yesScale})`;
+      btnNo.style.transform = `scale(${noScale})`;
+      btnNo.style.opacity = noScale;
+
+      // 第5次点击后，“否”完全消失
+      if (denyCount >= maxDeny) {
+        btnNo.style.pointerEvents = 'none';
+        btnNo.textContent = '';
+        // 可选：自动跳转
+        setTimeout(() => {
+          introScreen.classList.add('hidden');
+          popup.style.display = 'block';
+          music.muted = false;
+          music.volume = 0.6;
+        }, 800);
+      }
     });
   </script>
 
