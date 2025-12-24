@@ -62,25 +62,6 @@
       font-size: 32px;
       margin: 10px 0;
     }
-
-    /* 精美圣诞树图片容器 */
-    #christmas-tree {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      width: 80vw;
-      max-width: 320px;
-      text-align: center;
-    }
-
-    #christmas-tree img {
-      width: 100%;
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-    }
   </style>
 </head>
 <body>
@@ -90,15 +71,6 @@
     <div class="emoji">🎄🎅</div>
     <h2>圣诞快乐！</h2>
     <p>Merry Christmas!<br>愿平安与喜乐常伴你左右～</p>
-  </div>
-
-  <!-- 精美圣诞树（AI 生成高清图） -->
-  <div id="christmas-tree">
-    <img 
-      src="https://cdn.jsdelivr.net/gh/chuji2025/chuji@main/christmas-tree-beautiful.png" 
-      alt="精美圣诞树"
-      onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect x=%2285%22 y=%22260%22 width=%2230%22 height=%2240%22 fill=%22%238B4513%22/><polygon points=%22100,20 40,120 160,120%22 fill=%22%230a5f20%22/></svg>'"
-    >
   </div>
 
   <!-- 圣诞背景音乐 -->
@@ -117,7 +89,7 @@
         const snow = document.createElement('div');
         snow.innerHTML = '❄';
         snow.className = 'snow';
-        
+
         const size = 10 + Math.random() * 20;
         const opacity = 0.5 + Math.random() * 0.5;
         const duration = 5 + Math.random() * 10;
@@ -148,14 +120,14 @@
     // 音乐播放逻辑
     document.addEventListener('DOMContentLoaded', () => {
       const music = document.getElementById('christmas-music');
-      
+
       const playMusic = () => {
         music.play().catch(e => console.log("Autoplay blocked:", e));
         document.body.removeEventListener('click', playMusic);
       };
-      
+
       document.body.addEventListener('click', playMusic, { once: true });
-      
+
       setTimeout(() => {
         music.play().catch(() => {});
       }, 1000);
