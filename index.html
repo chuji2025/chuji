@@ -225,11 +225,22 @@
       el.style.padding = "8px 16px"; // 内边距，增加框的尺寸
       el.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.2)"; // 轻微阴影
 
-      // 使祝福不重叠，避免重叠的区域
+      // 计算弹窗的位置，避免祝福和弹窗重叠
+      const popupRect = document.getElementById('christmas-popup').getBoundingClientRect();
       const x = Math.random() * 70 + 10; // 避免靠近边缘
       const y = Math.random() * 70 + 10; // 避免靠近边缘
-      el.style.left = `${x}vw`;
-      el.style.top = `${y}vh`;
+
+      // 确保祝福不会出现在弹窗区域内
+      if (x > (popupRect.left / window.innerWidth) * 100 && x < ((popupRect.right / window.innerWidth) * 100)) {
+        el.style.left = `${x + 20}vw`;
+      }
+
+      if (y > (popupRect.top / window.innerHeight) * 100 && y < ((popupRect.bottom / window.innerHeight) * 100)) {
+        el.style.top = `${y + 20}vh`;
+      } else {
+        el.style.left = `${x}vw`;
+        el.style.top = `${y}vh`;
+      }
 
       const duration = 20 + Math.random() * 15;
       const delay = Math.random() * 10;
