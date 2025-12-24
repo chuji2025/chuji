@@ -244,12 +244,22 @@
       el.className = 'blessing';
       el.textContent = blessings[Math.floor(Math.random() * blessings.length)];
 
-      // 计算祝福的随机位置，避免重叠
-      const x = Math.random() * 50 + 25; // 保证祝福出现在框的区域内
-      const y = Math.random() * 50 + 10; // 保证祝福出现在框的区域内
+      // 获取白色框的位置
+      const popupRect = document.getElementById('christmas-popup').getBoundingClientRect();
 
-      el.style.left = `${x}vw`;
-      el.style.top = `${y}vh`;
+      // 确保祝福不会和框重合
+      let x, y;
+
+      // 随机生成位置，避免与框重合
+      do {
+        x = Math.random() * (window.innerWidth - 60) + 30; // 保证祝福不超出屏幕边界
+        y = Math.random() * (window.innerHeight - 150) + 50; // 让祝福出现在框的上方，不覆盖框
+
+        // 确保祝福不在白色框区域内
+      } while (x > popupRect.left && x < popupRect.right && y > popupRect.top && y < popupRect.bottom);
+
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
 
       return el;
     }
